@@ -16,4 +16,4 @@ in the future when they start to get cumbersome/overfull I will be sure to re-ev
 sub-sections. "Volumes," maybe? I haven't yet decided what I'll call them, but that's a problem for Future Me.
 
 ## License
-`spellbook` is released under the [GNU General Public License v3.0-or-later](./LICENSE).
+`spellbook` is released under the [MIT License](./LICENSE).
