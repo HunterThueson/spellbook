@@ -11,9 +11,7 @@ library is to simply practice programming, after all.
 The plan is relatively simple. I want to have several easy-to-access sub-projects within the larger `spellbook` that I can easily
 import when I'm working on other projects. Each of these, in keeping with the themes of "magic" and "wizardry," will be called
 a "tome." For instance, the library of `bash` code will be called `bash-tome`, the library of `rust` code will be called
-`rusty-tome`, and so on and so forth. For the foreseeable future, each one of these "tomes" will be just a single file, but
-in the future when they start to get cumbersome/overfull I will be sure to re-evaluate the idea of splitting them up into smaller
-sub-sections. "Volumes," maybe? I haven't yet decided what I'll call them, but that's a problem for Future Me.
+`rusty-tome`, and so on and so forth.
 
 ## License
 `spellbook` is released under the [MIT License](./LICENSE).

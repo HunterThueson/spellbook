@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+
+#################
+## timeControl ##
+#################
+
+# Perform mathematical operations on time strings in 'HH:MM:SS' format
+# Useful for (among other things) generating input strings to feed to `ffmpeg`
+
+fatal () {
+    printf "$0: fatal: $*" >&2
+    exit 1
+}
+
+show_help () {
+    cat <<- _help_message
+		Usage: ${0##*/} subcommand [OPTION(S)] ...
+	_help_message
+}
+
+[[ $# < 1 ]] && fatal not enough arguments
+
+subcommand=$1
+
+case $subcommand in
+	("-h"|"--help") show_help;;
+    ("testSubCommand") printf "Test Subcommand working correctly!";;
+esac
+
+exit 0
