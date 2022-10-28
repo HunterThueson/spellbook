@@ -4,34 +4,6 @@
 ## pngify ## -- quickly and easily turn undesirable image formats into .png files!
 ############
 
-# check for help option(s)
-
-# identify target directory
-
-# check for recursion flag
-
-    # if recursive, compile list of inner directories
-
-# check each undesirable image format to see in which target directories it is present
-
-# check to see if any files will be overwritten during conversion process
-
-    # if yes, prompt for user input asking whether to overwrite each/all files (y/N/A)
-    # ...unless "force" / "overwrite" / whatever option has been activated
-
-# mogrify -format png ...
-    # *.jpg / *.jpeg
-    # *.webp
-
-    # make sure each file echoes a log line to let the user know what's happening
-    # print persistent progress bar
-        # should include a count of files converted, total files, files remaining, failed conversions, and optionally number of files overwritten
-
-# if '--log-file' option was supplied, write to both standard output and log file
-
-# remove old files except when conversion failed (unless "no-remove" / "keep" / whatever option was supplied)
-# print stats message upon command completion
-
 fatal () {
     printf "$0: fatal: $*\n"
     exit 1
@@ -46,6 +18,27 @@ test_ext () {
     esac
 }
 
+# check for help option(s)
+
+# check for recursion flag
+
+# check to see if any files will be overwritten during conversion process
+# there should be an option to prompt for user (y/n) input if overwrite could be necessary
+# default behavior should be to overwrite files which are smaller or lower resolution or older versions of the same file
+
+# print persistent progress bar
+    # should include a count of files converted, total files, files remaining, failed conversions,
+    # and optionally number of files overwritten
+
+# if '--log-file' option was supplied, write to both standard output and log file
+# unless '-q' or '--quiet' was supplied as well, in which case write only to log file
+# maybe have options for multiple verbosity levels? Might be overkill but could be interesting to write
+
+# remove old files except when conversion failed if "--remove"/"-r"/whatever option is set
+
+# print stats message upon command completion
+
+# TODO: if no arguments are supplied, assume user wants to process all *.jpg *.jpeg *.webp etc. files in $PWD
 [[ $# = 0 ]] && fatal not enough arguments
 
 while [[ $1 != "" ]]
