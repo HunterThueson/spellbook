@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+############
+## pngify ## -- quickly and easily turn undesirable image formats into .png files!
+############
+
+# check for help option(s)
+
+# identify target directory
+
+# check for recursion flag
+
+    # if recursive, compile list of inner directories
+
+# check each undesirable image format to see in which target directories it is present
+
+# check to see if any files will be overwritten during conversion process
+
+    # if yes, prompt for user input asking whether to overwrite each/all files (y/N/A)
+    # ...unless "force" / "overwrite" / whatever option has been activated
+
+# mogrify -format png ...
+    # *.jpg / *.jpeg
+    # *.webp
+
+    # make sure each file echoes a log line to let the user know what's happening
+    # print persistent progress bar
+        # should include a count of files converted, total files, files remaining, failed conversions, and optionally number of files overwritten
+
+# if '--log-file' option was supplied, write to both standard output and log file
+
+# remove old files except when conversion failed (unless "no-remove" / "keep" / whatever option was supplied)
+# print stats message upon command completion
+
+fatal () {
+    printf "$0: fatal: $*\n"
+    exit 1
+}
+
+test_ext () {
+    [[ $# != 1 ]] && fatal extension validity could not be determined
+    case ${1##*.} in
+        ("jpg"|"jpeg"|"webp") return 0;;
+        ("png") printf "File $1 is already a .png, skipping conversion\n"; return 1;;
+        (*) fatal Unknown option: $1;;
+    esac
+}
+
+[[ $# = 0 ]] && fatal not enough arguments
+
+while [[ $1 != "" ]]
+do
+    test_ext $1
+    [[ $? = 1 ]] && shift && continue
+    if [[ -f $1 ]]; then
+        mogrify -format png $1 && printf "Successfully converted $1 to png format\n"
+    else
+        printf "$1 does not exist! You're such a joker. :)\n"
+    fi
+    shift
+done
+
+exit 0
