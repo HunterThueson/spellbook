@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
 
+# TODO: shopt -s extglob (if extglob needs to be set)
+# TODO: unset extglob if it wasn't set prior to script execution
+
 #################
 ## timeControl ##
 #################
@@ -9,7 +12,7 @@
 # Useful for (among other things) generating input strings to feed to `ffmpeg`
 
 fatal () {
-    printf "$0: fatal: $*" >&2
+    printf "$0: fatal: $*\n" >&2
     exit 1
 }
 
@@ -17,15 +20,43 @@ show_help () {
     cat <<- _help_message
 		Usage: ${0##*/} subcommand [OPTION(S)] ...
 	_help_message
+    exit 0
+}
+
+# TODO: find the sum of all (signed or unsigned) timevalue arguments passed to `add`
+
+add () {
+    [[ $# < 2 ]] && fatal: addition operation requires two or more arguments
+
+    counter=0
+    result=0
+
+    # Match "timevalues" ( HH:MM:SS format ) then break; use counter for number of `shift`s after add operation finishes
+    while [[ $1 =~ ^([0-9]{2}:){2}[0-9]{2}$ ]]; do
+        printf "in while loop: 1: $1 is a timevalue; "
+        counter=$(($counter + 1)); printf "counter = $counter\n"
+
+        # code for adding timevalues goes here
+
+        shift
+    done
+
+    [[ $counter < 2 ]] && fatal '`add` operation must be supplied 2 or more timevalues'
+
+    printf "\nResult: $result\n"
+    return $counter
 }
 
 [[ $# < 1 ]] && fatal not enough arguments
 
-subcommand=$1
-
-case $subcommand in
-	("-h"|"--help") show_help;;
-    ("testSubCommand") printf "Test Subcommand working correctly!";;
-esac
+while [[ $1 != "" ]]
+do
+    case $1 in
+        ("-h"|"--help") show_help;;
+        ("add"|"+") shift; add $*; shift $?;;
+        (*) fatal unknown option: $1;;
+    esac
+done
 
 exit 0
+
