@@ -1,56 +1,50 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 
-############
-## pngify ## -- quickly and easily turn undesirable image formats into .png files!
-############
-
+# Store original files in optional backup directory
+backup_dir="${PWD}/backup"
+ 
+# Handle fatal errors -- pass error message as arguments to function
 fatal () {
-    printf "$0: fatal: $*\n"
+    printf "$0: fatal error: $*\n" >&2
     exit 1
 }
 
-test_ext () {
-    [[ $# != 1 ]] && fatal extension validity could not be determined
-    case ${1##*.} in
-        ("jpg"|"jpeg"|"webp") return 0;;
-        ("png") printf "File $1 is already a .png, skipping conversion\n"; return 1;;
-        (*) fatal Unknown option: $1;;
-    esac
-}
+# (Temporarily) reject all invocations with more than 0 arguments
+# Script will eventually allow several different options and should accept
+# filenames as input (only assuming everything in $PWD if no args are given)
+[[ ! $# = 0 ]] && fatal too many arguments
 
-# check for help option(s)
+# Check whether backup directory exists and create it if necessary
+if [[ ! ${backup_dir} = "" ]]; then
+    [[ -d ${backup_dir} ]] || mkdir ${backup_dir}
+fi
 
-# check for recursion flag
+# If no arguments are supplied, assume all images (except .png files)
+# in $PWD are to be converted
+for ext in jpg jpeg webp; do
+    for file in ${PWD}/*.${ext}; do
 
-# check to see if any files will be overwritten during conversion process
-# there should be an option to prompt for user (y/n) input if overwrite could be necessary
-# default behavior should be to overwrite files which are smaller or lower resolution or older versions of the same file
+        # Don't try to mogrify *.${ext} if it doesn't exist
+        [[ ! -e ${file} ]] && continue
 
-# print persistent progress bar
-    # should include a count of files converted, total files, files remaining, failed conversions,
-    # and optionally number of files overwritten
+        # Skip files that already have .png counterparts
+        if [[ -e "${file%%.*}.png" ]]; then
+            printf "$1 already exists, skipping conversion...\n" && continue;
+        fi
 
-# if '--log-file' option was supplied, write to both standard output and log file
-# unless '-q' or '--quiet' was supplied as well, in which case write only to log file
-# maybe have options for multiple verbosity levels? Might be overkill but could be interesting to write
+        # Process image:
+        magick mogrify \
+            -quality 100 \
+            -format png \
+            -antialias \
+            ${file} \
+            && \
+            mv ${file} ${backup_dir}/${file##*/}        # if backup flag is supplied
 
-# remove old files except when conversion failed if "--remove"/"-r"/whatever option is set
-
-# print stats message upon command completion
-
-# TODO: if no arguments are supplied, assume user wants to process all *.jpg *.jpeg *.webp etc. files in $PWD
-[[ $# = 0 ]] && fatal not enough arguments
-
-while [[ $1 != "" ]]
-do
-    test_ext $1
-    [[ $? = 1 ]] && shift && continue
-    if [[ -f $1 ]]; then
-        mogrify -format png $1 && printf "Successfully converted $1 to png format\n"
-    else
-        printf "$1 does not exist! You're such a joker. :)\n"
-    fi
-    shift
+        # Confirmation message                          # should be dependent on
+        printf "Successfully converted ${file}!\n"      # <- verbosity level
+    done
 done
 
 exit 0
