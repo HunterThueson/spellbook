@@ -1,6 +1,6 @@
 # spellbook
 
-A good wizard knows how to write many different kinds of spells. A great wizard knows she should only have to write it once.
+A good wizard knows how to write many different kinds of spells. A great wizard knows they should only have to write it once.
 
 `spellbook` is a library of useful programming constructs written by myself (Hunter Thueson). Its primary purpose is to help
 me quickly add commonly-used functionality (such as `-h` and `--help` flags) to my own code. This library is not intended to
